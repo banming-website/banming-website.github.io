@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>麦田助手3.0 - 重新定义改卡软件</title>
+  <!-- 引入Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 引入Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <!-- 必应站长认证 -->
+  <meta name="msvalidate.01" content="FAA54433E70F5758B6C5C56EADF1D789" />
+  <!-- Tailwind配置 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0B3D91', // 深蓝主色
+            secondary: '#1E88E5', // 亮蓝辅助色
+            accent: '#00E5FF', // 青色强调色
+            neon: '#7C4DFF', // 霓虹紫
+            dark: '#0A1929', // 深色背景
+            light: '#E0F7FA' // 浅色文本
+          },
+          fontFamily: {
+            cyber: ['Orbitron', 'sans-serif', 'system-ui'],
+            sans: ['Inter', 'sans-serif']
+          },
+        },
+      }
+    }
+  </script>
+  
+  <!-- 自定义样式 -->
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .text-glow {
+        text-shadow: 0 0 10px currentColor, 0 0 20px currentColor/70;
+      }
+      .bg-grid {
+        background-image: linear-gradient(rgba(30, 136, 229, 0.1) 1px, transparent 1px),
+                          linear-gradient(90deg, rgba(30, 136, 229, 0.1) 1px, transparent 1px);
+        background-size: 20px 20px;
+      }
+      .border-glow {
+        box-shadow: 0 0 10px theme('colors.accent'), 0 0 20px theme('colors.accent/30');
+      }
+      .animate-pulse-slow {
+        animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+      .animate-float {
+        animation: float 6s ease-in-out infinite;
+      }
+      .animate-float-delay {
+        animation: float 6s ease-in-out 2s infinite;
+      }
+      .gradient-text {
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        background-image: linear-gradient(90deg, theme('colors.accent'), theme('colors.neon'));
+      }
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+    
+    @keyframes scanline {
+      0% { background-position: 0 -100vh; }
+      100% { background-position: 0 100vh; }
+    }
+    
+    .scanline::before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      animation: scanline 6s linear infinite;
+    }
+  </style>
+  
+  <!-- 引入Google字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="font-sans bg-dark text-light overflow-x-hidden relative scanline">
+  <!-- 背景装饰 -->
+  <div class="fixed inset-0 bg-grid opacity-30 pointer-events-none"></div>
+  <div class="fixed top-0 left-0 w-full h-full bg-gradient-to-b from-primary/20 to-dark pointer-events-none"></div>
+  
+  <!-- 顶部导航 -->
+  <nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-dark/70 border-b border-secondary/30 transition-all duration-300">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <div class="w-10 h-10 rounded-lg from-accent to-neon flex items-center justify-center">
+          <img src="./favicon.ico"></img>
+        </div>
+        <span class="font-cyber font-bold text-xl text-white">麦田助手<span class="text-accent">3.0</span></span>
+      </div>
+      
+      <!-- 桌面导航 -->
+      <div class="hidden md:flex items-center space-x-8">
+        <a href="#features" class="text-gray-300 hover:text-accent transition-colors duration-300">功能</a>
+        <a href="#compare" class="text-gray-300 hover:text-accent transition-colors duration-300">对比</a>
+        <a href="#testimonials" class="text-gray-300 hover:text-accent transition-colors duration-300">评价</a>
+        <a href="#faq" class="text-gray-300 hover:text-accent transition-colors duration-300">常见问题</a>
+		<a href="./ic/" class="text-gray-300 hover:text-accent transition-colors duration-300">支持系统</a>
+        <a href="javascript:alert('请联系QQ:252986217')" class="px-5 py-2 rounded-lg bg-gradient-to-r from-accent to-neon text-dark font-medium hover:opacity-90 transition-all duration-300 transform hover:-translate-y-0.5 flex items-center">
+          <i class="fa fa-qq mr-2"></i> 联系购买
+        </a>
+      </div>
+      
+      <!-- 移动端菜单按钮 -->
+      <button id="menuBtn" class="md:hidden text-white text-xl">
+        <i class="fa fa-bars"></i>
+      </button>
+    </div>
+    
+    <!-- 移动端菜单 -->
+    <div id="mobileMenu" class="md:hidden hidden bg-dark/95 backdrop-blur-lg border-t border-secondary/30">
+      <div class="container mx-auto px-4 py-3 flex flex-col space-y-4">
+        <a href="#features" class="text-gray-300 hover:text-accent py-2 transition-colors duration-300">功能</a>
+        <a href="#compare" class="text-gray-300 hover:text-accent py-2 transition-colors duration-300">对比</a>
+        <a href="#testimonials" class="text-gray-300 hover:text-accent py-2 transition-colors duration-300">评价</a>
+        <a href="#faq" class="text-gray-300 hover:text-accent py-2 transition-colors duration-300">常见问题</a>
+		<a href="./ic/" class="text-gray-300 hover:text-accent py-2 transition-colors duration-300">支持系统</a>
+        <a href="javascript:alert('请联系QQ:252986217')" class="px-5 py-3 rounded-lg bg-gradient-to-r from-accent to-neon text-dark font-medium hover:opacity-90 transition-all duration-300 text-center">
+          <i class="fa fa-qq mr-2"></i> 联系购买
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 英雄区域 -->
+  <header class="min-h-screen flex items-center pt-20 relative overflow-hidden">
+    <!-- 装饰元素 -->
+    <div class="absolute top-1/4 right-1/4 w-64 h-64 bg-neon/20 rounded-full blur-3xl animate-pulse-slow"></div>
+    <div class="absolute bottom-1/4 left-1/3 w-80 h-80 bg-accent/20 rounded-full blur-3xl animate-pulse-slow"></div>
+    
+    <div class="container mx-auto px-4 py-16 relative z-10">
+      <div class="flex flex-col lg:flex-row items-center gap-12">
+        <div class="lg:w-1/2 space-y-6">
+          <div class="inline-block px-4 py-1 rounded-full bg-secondary/20 border border-secondary/40 text-accent text-sm font-medium">
+            下一代改卡软件 · 麦田助手3.0
+          </div>
+          <h1 class="font-cyber font-bold text-[clamp(2.5rem,6vw,4rem)] leading-tight">
+            重新定义<br>
+            <span class="gradient-text">改卡软件</span>
+          </h1>
+          <p class="text-gray-300 text-lg md:text-xl max-w-lg">
+            麦田助手3.0 集成了智能分析与一键改卡、一件发卡，让您的工作效率提升数十倍倍，轻松应对复杂任务。
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 pt-4">
+            <a href="#contact" class="px-8 py-4 rounded-lg bg-gradient-to-r from-accent to-neon text-dark font-bold text-lg hover:opacity-90 transition-all duration-300 shadow-lg shadow-accent/20 transform hover:-translate-y-1 flex items-center justify-center">
+              <i class="fa fa-qq mr-2"></i> 联系购买
+            </a>
+            <a href="#features" class="px-8 py-4 rounded-lg border border-accent/50 text-accent font-bold text-lg hover:bg-accent/10 transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center">
+              了解更多 <i class="fa fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+          <div class="flex items-center space-x-4 pt-6">
+            <div class="flex -space-x-2">
+              <img src="https://picsum.photos/id/1001/40/40" alt="用户头像" class="w-10 h-10 rounded-full border-2 border-dark">
+              <img src="https://picsum.photos/id/1002/40/40" alt="用户头像" class="w-10 h-10 rounded-full border-2 border-dark">
+              <img src="https://picsum.photos/id/1003/40/40" alt="用户头像" class="w-10 h-10 rounded-full border-2 border-dark">
+              <div class="w-10 h-10 rounded-full border-2 border-dark bg-secondary/20 flex items-center justify-center text-xs font-medium">
+                80+
+              </div>
+            </div>
+            <div class="text-gray-400 text-sm">
+              <span class="text-accent font-bold">4.7/5</span> 来自80+用户
+            </div>
+          </div>
+        </div>
+        
+        <div class="lg:w-1/2 relative">
+          <div class="relative z-10 animate-float">
+            <img src="https://picsum.photos/id/1/600/400" alt="麦田助手3.0 软件界面" class="rounded-xl shadow-2xl shadow-primary/30 border border-accent/30">
+            <div class="absolute -bottom-6 -right-6 bg-dark p-4 rounded-lg border border-secondary/30 shadow-xl animate-float-delay">
+              <div class="flex items-center space-x-2">
+                <div class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
+                <span class="text-sm font-medium">持续增加新系统</span>
+              </div>
+            </div>
+          </div>
+          <div class="absolute inset-0 bg-gradient-to-tr from-accent/20 to-neon/20 rounded-full blur-3xl -z-10 transform scale-110"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 滚动指示器 -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce">
+      <span class="text-sm text-gray-400 mb-2">向下滚动</span>
+      <i class="fa fa-chevron-down text-accent"></i>
+    </div>
+  </header>
+
+  <!-- 功能特点 -->
+  <section id="features" class="py-20 relative">
+    <div class="container mx-auto px-4">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="inline-block px-4 py-1 rounded-full bg-secondary/20 border border-secondary/40 text-accent text-sm font-medium mb-4">
+          核心功能
+        </div>
+        <h2 class="font-cyber font-bold text-[clamp(1.8rem,4vw,3rem)] mb-6">
+          重新定义<span class="gradient-text">改卡软件</span>
+        </h2>
+        <p class="text-gray-300 text-lg">
+          麦田助手3.0联网版支持一百多种iC系统，更配备了CPU卡的读数据、写结构、写数据以及修改功能。
+        </p>
+      </div>
+      
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- 功能卡片1 -->
+        <div class="bg-dark/50 backdrop-blur-sm rounded-xl p-6 border border-secondary/20 hover:border-accent/50 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-lg hover:shadow-accent/10 group">
+          <div class="w-14 h-14 rounded-lg bg-primary/30 flex items-center justify-center text-accent text-2xl mb-6 group-hover:bg-accent group-hover:text-dark transition-all duration-300">
+            <i class="fa fa-bolt"></i>
+          </div>
+          <h3 class="font-cyber font-bold text-xl mb-3">自动分析</h3>
+          <p class="text-gray-400">
+            麦田助手3.0联网版可以快速、准确的分析数据。一拖，一点，分析数据即可完成。
+          </p>
+        </div>
+        
+        <!-- 功能卡片2 -->
+        <div class="bg-dark/50 backdrop-blur-sm rounded-xl p-6 border border-secondary/20 hover:border-accent/50 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-lg hover:shadow-accent/10 group">
+          <div class="w-14 h-14 rounded-lg bg-primary/30 flex items-center justify-center text-accent text-2xl mb-6 group-hover:bg-accent group-hover:text-dark transition-all duration-300">
+            <i class="fa fa-credit-card"></i>
+          </div>
+          <h3 class="font-cyber font-bold text-xl mb-3">一键发卡</h3>
+          <p class="text-gray-400">
+            麦田助手不同于其他同类软件，我们的软件仅需要点击“随机卡号发卡”发卡即可完成，不像其他软件操作复杂，浪费时间。
+          </p>
+        </div>
+        
+        <!-- 功能卡片3 -->
+        <div class="bg-dark/50 backdrop-blur-sm rounded-xl p-6 border border-secondary/20 hover:border-accent/50 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-lg hover:shadow-accent/10 group">
+          <div class="w-14 h-14 rounded-lg bg-primary/30 flex items-center justify-center text-accent text-2xl mb-6 group-hover:bg-accent group-hover:text-dark transition-all duration-300">
+            <i class="fa fa-edit"></i>
+          </div>
+          <h3 class="font-cyber font-bold text-xl mb-3">原卡修改</h3>
+          <p class="text-gray-400">
+            可直接原卡修改，适用于客户只需要延期，不需要复制多卡的情况。
+        </div>
+        
+        <!-- 功能卡片4 -->
+        <div class="bg-dark/50 backdrop-blur-sm rounded-xl p-6 border border-secondary/20 hover:border-accent/50 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-lg hover:shadow-accent/10 group">
+          <div class="w-14 h-14 rounded-lg bg-primary/30 flex items-center justify-center text-accent text-2xl mb-6 group-hover:bg-accent group-hover:text-dark transition-all duration-300">
+            <i class="fa fa-copy"></i>
+          </div>
+          <h3 class="font-cyber font-bold text-xl mb-3">多系统一键发卡</h3>
+          <p class="text-gray-400">
+            麦田助手支持多系统一键发卡，方便好用，
+          </p>
+        </div>
+        
+        <!-- 功能卡片5 -->
+        <div class="bg-dark/50 backdrop-blur-sm rounded-xl p-6 border border-secondary/20 hover:border-accent/50 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-lg hover:shadow-accent/10 group">
+          <div class="w-14 h-14 rounded-lg bg-primary/30 flex items-center justify-center text-accent text-2xl mb-6 group-hover:bg-accent group-hover:text-dark transition-all duration-300">
+            <i class="fa fa-thumbs-up"></i>
+          </div>
+          <h3 class="font-cyber font-bold text-xl mb-3">技术支持</h3>
+          <p class="text-gray-400">
+            购买麦田软件后，您就会获得终身软件更新及技术支持服务，客服会手把手教会您使用软件。
+          </p>
+        </div>
+        
+        <!-- 功能卡片6 -->
+        <div class="bg-dark/50 backdrop-blur-sm rounded-xl p-6 border border-secondary/20 hover:border-accent/50 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-lg hover:shadow-accent/10 group">
+          <div class="w-14 h-14 rounded-lg bg-primary/30 flex items-center justify-center text-accent text-2xl mb-6 group-hover:bg-accent group-hover:text-dark transition-all duration-300">
+            <i class="fa fa-gift"></i>
+          </div>
+          <h3 class="font-cyber font-bold text-xl mb-3">专属福利</h3>
+          <p class="text-gray-400">
+            购买麦田助手后，您可以加入专属会员服务群，享受各种福利。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 软件对比 -->
+  <section id="compare" class="py-20 bg-primary/10 relative">
+    <div class="container mx-auto px-4">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="inline-block px-4 py-1 rounded-full bg-secondary/20 border border-secondary/40 text-accent text-sm font-medium mb-4">
+          性能对比
+        </div>
+        <h2 class="font-cyber font-bold text-[clamp(1.8rem,4vw,3rem)] mb-6">
+          与同类<span class="gradient-text">软件的优势</span>
+        </h2>
+        <p class="text-gray-300 text-lg">
+          麦田助手3.0 在核心性能指标上全面领先，为您提供更高效、更稳定的使用体验。
+        </p>
+      </div>
+      
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[768px] border-collapse">
+          <thead>
+            <tr class="border-b border-secondary/30">
+              <th class="py-4 px-6 text-left text-gray-300 font-medium">功能指标</th>
+              <th class="py-4 px-6 text-center">
+                <div class="font-cyber font-bold text-white">麦田助手3.0</div>
+              </th>
+              <th class="py-4 px-6 text-center">
+                <div class="font-medium text-gray-300">软件A</div>
+              </th>
+              <th class="py-4 px-6 text-center">
+                <div class="font-medium text-gray-300">软件B</div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-secondary/20 hover:bg-primary/5 transition-colors">
+              <td class="py-4 px-6 text-gray-300">处理速度</td>
+              <td class="py-4 px-6 text-center">
+                <div class="w-full bg-gray-700/50 rounded-full h-4 mb-1">
+                  <div class="bg-gradient-to-r from-accent to-neon h-4 rounded-full" style="width: 95%"></div>
+                </div>
+                <span class="text-accent font-bold">95%</span>
+              </td>
+              <td class="py-4 px-6 text-center">
+                <div class="w-full bg-gray-700/50 rounded-full h-4 mb-1">
+                  <div class="bg-gray-500 h-4 rounded-full" style="width: 65%"></div>
+                </div>
+                <span class="text-gray-400">65%</span>
+              </td>
+              <td class="py-4 px-6 text-center">
+                <div class="w-full bg-gray-700/50 rounded-full h-4 mb-1">
+                  <div class="bg-gray-500 h-4 rounded-full" style="width: 72%"></div>
+                </div>
+                <span class="text-gray-400">72%</span>
+              </td>
+            </tr>
+            <tr class="border-b border-secondary/20 hover:bg-primary/5 transition-colors">
+              <td class="py-4 px-6 text-gray-300">系统数量</td>
+              <td class="py-4 px-6 text-center">
+                <div class="w-full bg-gray-700/50 rounded-full h-4 mb-1">
+                  <div class="bg-gradient-to-r from-accent to-neon h-4 rounded-full" style="width: 90%"></div>
+                </div>
+                <span class="text-accent font-bold">90%</span>
+              </td>
+              <td class="py-4 px-6 text-center">
+                <div class="w-full bg-gray-700/50 rounded-full h-4 mb-1">
+                  <div class="bg-gray-500 h-4 rounded-full" style="width: 55%"></div>
+                </div>
+                <span class="text-gray-400">55%</span>
+              </td>
+              <td class="py-4 px-6 text-center">
+                <div class="w-full bg-gray-700/50 rounded-full h-4 mb-1">
+                  <div class="bg-gray-500 h-4 rounded-full" style="width: 68%"></div>
+                </div>
+                <span class="text-gray-400">68%</span>
+              </td>
+            </tr>
+            <tr class="border-b border-secondary/20 hover:bg-primary/5 transition-colors">
+              <td class="py-4 px-6 text-gray-300">稳定性</td>
+              <td class="py-4 px-6 text-center">
+                <div class="w-full bg-gray-700/50 rounded-full h-4 mb-1">
+                  <div class="bg-gradient-to-r from-accent to-neon h-4 rounded-full" style="width: 99%"></div>
+                </div>
+                <span class="text-accent font-bold">99%</span>
+              </td>
+              <td class="py-4 px-6 text-center">
+                <div class="w-full bg-gray-700/50 rounded-full h-4 mb-1">
+                  <div class="bg-gray-500 h-4 rounded-full" style="width: 82%"></div>
+                </div>
+                <span class="text-gray-400">82%</span>
+              </td>
+              <td class="py-4 px-6 text-center">
+                <div class="w-full bg-gray-700/50 rounded-full h-4 mb-1">
+                  <div class="bg-gray-500 h-4 rounded-full" style="width: 79%"></div>
+                </div>
+                <span class="text-gray-400">79%</span>
+              </td>
+            </tr>
+            <tr class="border-b border-secondary/20 hover:bg-primary/5 transition-colors">
+              <td class="py-4 px-6 text-gray-300">资源占用</td>
+              <td class="py-4 px-6 text-center">
+                <div class="w-full bg-gray-700/50 rounded-full h-4 mb-1">
+                  <div class="bg-gradient-to-r from-accent to-neon h-4 rounded-full" style="width: 25%"></div>
+                </div>
+                <span class="text-accent font-bold">25%</span>
+              </td>
+              <td class="py-4 px-6 text-center">
+                <div class="w-full bg-gray-700/50 rounded-full h-4 mb-1">
+                  <div class="bg-gray-500 h-4 rounded-full" style="width: 65%"></div>
+                </div>
+                <span class="text-gray-400">65%</span>
+              </td>
+              <td class="py-4 px-6 text-center">
+                <div class="w-full bg-gray-700/50 rounded-full h-4 mb-1">
+                  <div class="bg-gray-500 h-4 rounded-full" style="width: 58%"></div>
+                </div>
+                <span class="text-gray-400">58%</span>
+              </td>
+            </tr>
+            <tr class="border-b border-secondary/20 hover:bg-primary/5 transition-colors">
+              <td class="py-4 px-6 text-gray-300">方便性</td>
+              <td class="py-4 px-6 text-center">
+                <div class="w-full bg-gray-700/50 rounded-full h-4 mb-1">
+                  <div class="bg-gradient-to-r from-accent to-neon h-4 rounded-full" style="width: 92%"></div>
+                </div>
+                <span class="text-accent font-bold">92%</span>
+              </td>
+              <td class="py-4 px-6 text-center">
+                <div class="w-full bg-gray-700/50 rounded-full h-4 mb-1">
+                  <div class="bg-gray-500 h-4 rounded-full" style="width: 60%"></div>
+                </div>
+                <span class="text-gray-400">60%</span>
+              </td>
+              <td class="py-4 px-6 text-center">
+                <div class="w-full bg-gray-700/50 rounded-full h-4 mb-1">
+                  <div class="bg-gray-500 h-4 rounded-full" style="width: 75%"></div>
+                </div>
+                <span class="text-gray-400">75%</span>
+              </td>
+            </tr>
+            <tr class="hover:bg-primary/5 transition-colors">
+              <td class="py-4 px-6 text-gray-300">价格优势</td>
+              <td class="py-4 px-6 text-center">
+                <div class="w-full bg-gray-700/50 rounded-full h-4 mb-1">
+                  <div class="bg-gradient-to-r from-accent to-neon h-4 rounded-full" style="width: 88%"></div>
+                </div>
+                <span class="text-accent font-bold">88%</span>
+              </td>
+              <td class="py-4 px-6 text-center">
+                <div class="w-full bg-gray-700/50 rounded-full h-4 mb-1">
+                  <div class="bg-gray-500 h-4 rounded-full" style="width: 45%"></div>
+                </div>
+                <span class="text-gray-400">45%</span>
+              </td>
+              <td class="py-4 px-6 text-center">
+                <div class="w-full bg-gray-700/50 rounded-full h-4 mb-1">
+                  <div class="bg-gray-500 h-4 rounded-full" style="width: 52%"></div>
+                </div>
+                <span class="text-gray-400">52%</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 用户评价 -->
+  <section id="testimonials" class="py-20 relative">
+    <div class="container mx-auto px-4">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="inline-block px-4 py-1 rounded-full bg-secondary/20 border border-secondary/40 text-accent text-sm font-medium mb-4">
+          用户反馈
+        </div>
+        <h2 class="font-cyber font-bold text-[clamp(1.8rem,4vw,3rem)] mb-6">
+          客户的<span class="gradient-text">真实评价</span>
+        </h2>
+        <p class="text-gray-300 text-lg">
+          来自各行各业的用户已经通过麦田助手3.0提升了工作效率，看看他们怎么说。
+        </p>
+      </div>
+      
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- 评价1 -->
+        <div class="bg-dark/50 backdrop-blur-sm rounded-xl p-6 border border-secondary/20 hover:border-accent/50 transition-all duration-300">
+          <div class="flex items-center text-yellow-400 mb-4">
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+          </div>
+          <p class="text-gray-300 mb-6">
+            "今天买麦田，明天开本田。麦田的系统多，价格低，大部分系统都是永久免费做卡，方便好用。"
+          </p>
+          <div class="flex items-center">
+            <img src="https://picsum.photos/id/1010/50/50" alt="用户头像" class="w-12 h-12 rounded-full mr-4">
+            <div>
+              <div class="font-medium text-white">卡蛋</div>
+              <div class="text-sm text-gray-400">卡匠</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 评价2 -->
+        <div class="bg-dark/50 backdrop-blur-sm rounded-xl p-6 border border-secondary/20 hover:border-accent/50 transition-all duration-300">
+          <div class="flex items-center text-yellow-400 mb-4">
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+          </div>
+          <p class="text-gray-300 mb-6">
+            "作为一名开锁店店员，麦田助手的分析功能帮我节省了大量时间，分析结果也非常专业，客户很满意。"
+          </p>
+          <div class="flex items-center">
+            <img src="https://picsum.photos/id/1011/50/50" alt="用户头像" class="w-12 h-12 rounded-full mr-4">
+            <div>
+              <div class="font-medium text-white">小李</div>
+              <div class="text-sm text-gray-400">小李开锁店店员</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 评价3 -->
+        <div class="bg-dark/50 backdrop-blur-sm rounded-xl p-6 border border-secondary/20 hover:border-accent/50 transition-all duration-300">
+          <div class="flex items-center text-yellow-400 mb-4">
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star-half-o"></i>
+          </div>
+          <p class="text-gray-300 mb-6">
+            "麦田助手没有花里胡哨的功能，功能纯粹，好用极了。"
+          </p>
+          <div class="flex items-center">
+            <img src="https://picsum.photos/id/1012/50/50" alt="用户头像" class="w-12 h-12 rounded-full mr-4">
+            <div>
+              <div class="font-medium text-white">王强</div>
+              <div class="text-sm text-gray-400">配卡的</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 常见问题 -->
+  <section id="faq" class="py-20 bg-primary/10 relative">
+    <div class="container mx-auto px-4">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="inline-block px-4 py-1 rounded-full bg-secondary/20 border border-secondary/40 text-accent text-sm font-medium mb-4">
+          解答疑惑
+        </div>
+        <h2 class="font-cyber font-bold text-[clamp(1.8rem,4vw,3rem)] mb-6">
+          常见<span class="gradient-text">问题解答</span>
+        </h2>
+        <p class="text-gray-300 text-lg">
+          我们收集了用户最常问的问题，如果您有其他疑问，欢迎联系我们。
+        </p>
+      </div>
+      
+      <div class="max-w-3xl mx-auto space-y-4">
+        <!-- FAQ项目1 -->
+        <div class="bg-dark/50 backdrop-blur-sm rounded-xl border border-secondary/20">
+          <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none">
+            <span class="font-medium text-white">麦田助手支持哪些门禁、电梯系统？</span>
+            <i class="fa fa-chevron-down text-accent transition-transform duration-300"></i>
+          </button>
+          <div class="faq-content hidden px-6 pb-4">
+            <p class="text-gray-400">
+              麦田助手支持一百多种系统的修改，具体系统请<a href="./ic/"><b>点击此处</a></b>查看
+            </p>
+          </div>
+        </div>
+        
+        <!-- FAQ项目2 -->
+        <div class="bg-dark/50 backdrop-blur-sm rounded-xl border border-secondary/20">
+          <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none">
+            <span class="font-medium text-white">购买后可以获得哪些支持服务？</span>
+            <i class="fa fa-chevron-down text-accent transition-transform duration-300"></i>
+          </button>
+          <div class="faq-content hidden px-6 pb-4">
+            <p class="text-gray-400">
+              所有购买用户均可免费获得技术支持及后续的功能更新，并会附赠200点数。
+            </p>
+          </div>
+        </div>
+        
+        <!-- FAQ项目3 -->
+        <div class="bg-dark/50 backdrop-blur-sm rounded-xl border border-secondary/20">
+          <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none">
+            <span class="font-medium text-white">为什么选择我们？</span>
+            <i class="fa fa-chevron-down text-accent transition-transform duration-300"></i>
+          </button>
+          <div class="faq-content hidden px-6 pb-4">
+            <p class="text-gray-400">
+              我们的软件更新速度快，系统多，准确率高，遥遥领先于同类软件。
+            </p>
+          </div>
+        </div>
+        
+        <!-- FAQ项目4 -->
+        <div class="bg-dark/50 backdrop-blur-sm rounded-xl border border-secondary/20">
+          <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none">
+            <span class="font-medium text-white">如何购买软件？</span>
+            <i class="fa fa-chevron-down text-accent transition-transform duration-300"></i>
+          </button>
+          <div class="faq-content hidden px-6 pb-4">
+            <p class="text-gray-400">
+              请点击本页面中的“联系QQ”按钮，联系软件作者，咨询购买软件。
+            </p>
+          </div>
+        </div>
+      </div>
+	  <br/>
+	  <a href="javascript:alert('请联系QQ:252986217')" style="width:200px;text-align:center;margin: 0 auto;" class="px-5 py-2 rounded-lg bg-gradient-to-r from-accent to-neon text-dark font-medium hover:opacity-90 transition-all duration-300 transform hover:-translate-y-0.5 flex items-center">
+        <i class="fa fa-qq mr-2"></i> 联系购买
+      </a>
+    </div>
+  </section>
+  <!-- 页脚 -->
+  <footer class="py-12 bg-dark border-t border-secondary/30">
+    <div class="container mx-auto px-4">
+      <div class="grid md:grid-cols-4 gap-8 mb-12">
+        <div>
+          <div class="flex items-center space-x-2 mb-6">
+            <div class="w-10 h-10 from-accent to-neon flex items-center justify-center">
+              <img src="./favicon.ico"/>
+            </div>
+            <span class="font-cyber font-bold text-xl text-white">麦田助手<span class="text-accent">3.0</span></span>
+          </div>
+          <p class="text-gray-400 mb-6">
+            重新定义改卡软件，让效率提升数十倍。
+          </p>
+        </div>
+      </div>
+      
+      <div class="border-t border-secondary/20 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-500 text-sm mb-4 md:mb-0">
+          &copy; 2025 保留所有权利。 声明：本网站非软件作者官方网站，仅仅为了让大家更好的了解软件。 此软件提供的功能，仅为个人研究兴趣爱好使用。坚决禁止利用此软件从事违反国家法律的行为活动。任何企业或个人利用此软件对第三方造成不利影响，一切后果自己承担，软件作者及网站作者不承担任何责任!凡以任何方式直接或间接使用此软件者，视为自愿接受本软件声明!
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    // 移动端菜单切换
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+      const icon = menuBtn.querySelector('i');
+      if (mobileMenu.classList.contains('hidden')) {
+        icon.classList.remove('fa-times');
+        icon.classList.add('fa-bars');
+      } else {
+        icon.classList.remove('fa-bars');
+        icon.classList.add('fa-times');
+      }
+    });
+    
+    // 导航栏滚动效果
+    window.addEventListener('scroll', () => {
+      const nav = document.querySelector('nav');
+      if (window.scrollY > 50) {
+        nav.classList.add('py-2');
+        nav.classList.remove('py-3');
+        nav.classList.add('shadow-lg');
+        nav.classList.add('shadow-primary/10');
+      } else {
+        nav.classList.add('py-3');
+        nav.classList.remove('py-2');
+        nav.classList.remove('shadow-lg');
+        nav.classList.remove('shadow-primary/10');
+      }
+    });
+    
+    // FAQ折叠效果
+    const faqToggles = document.querySelectorAll('.faq-toggle');
+    
+    faqToggles.forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const content = toggle.nextElementSibling;
+        const icon = toggle.querySelector('i');
+        
+        // 关闭其他所有FAQ
+        document.querySelectorAll('.faq-content').forEach(item => {
+          if (item !== content && !item.classList.contains('hidden')) {
+            item.classList.add('hidden');
+            item.previousElementSibling.querySelector('i').classList.remove('rotate-180');
+          }
+        });
+        
+        // 切换当前FAQ
+        content.classList.toggle('hidden');
+        icon.classList.toggle('rotate-180');
+      });
+    });
+    
+    // 平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // 关闭移动菜单（如果打开）
+        if (!mobileMenu.classList.contains('hidden')) {
+          mobileMenu.classList.add('hidden');
+          const icon = menuBtn.querySelector('i');
+          icon.classList.remove('fa-times');
+          icon.classList.add('fa-bars');
+        }
+        
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 80,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
