@@ -4,13 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>麦田CPU助手支持系统查询</title>
-    <meta name="keywords" content="IC卡,ID卡,CPU卡,电梯卡,门禁卡,水卡,停车卡,蓝牙卡,分析修改" id="keywords" />
-    <meta name="description" content="IC卡分析修改,电梯卡分析,电梯卡修改,电梯卡延期,电梯卡复制,门禁卡分析,门禁卡修改,门禁卡延期,门禁卡复制,停车卡延期复制" id="description" />
-    <link rel="icon" href="favicon.ico">
+    <title>门禁电梯卡修改常用人员</title>
+    <link rel="icon" href="../favicon.ico">
     <!-- 引入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-
+    <!-- 修复meta标签content拼写错误 -->
+    <meta name="keywords" content="门禁,电梯卡,修改,常用人员,门禁电梯卡修改常用人员,门禁电梯卡,修改常用人员,查询">
+    <meta name="description" content="门禁电梯卡修改常用人员查询页面，在这里您可以查询到众多制卡人的联系方式，以便联系、咨询。">
+    <meta name="robots" content="all">
     <!-- 配置 Tailwind 自定义主题 -->
     <script>
         tailwind.config = {
@@ -35,8 +36,6 @@
             }
         }
     </script>
-
-    <!-- 修复表头悬空的CSS -->
     <style>
         /* 移除与sticky冲突的ontop类，修复表头定位 */
         
@@ -49,11 +48,17 @@
             object-fit: cover;
             /* 防止图片拉伸 */
         }
-        /* 表头样式：强制背景色+提高层级，避免穿透和悬空 */
+        /* 表格容器添加纵向滚动，确保表头跟随滚动 */
         
-        thead tr {
-            background-color: #165DFF !important;
-            z-index: 20 !important;
+        .overflow-x-auto {
+            max-height: calc(100vh - 200px);
+            /* 适配页面布局的高度限制 */
+            overflow-y: auto;
+        }
+        /* 表头单元格不换行，保证与内容列对齐 */
+        
+        th {
+            white-space: nowrap;
         }
     </style>
 </head>
@@ -62,22 +67,15 @@
     <!-- 顶部导航栏 -->
     <header class="bg-white shadow-sm sticky top-0 z-50 transition-all duration-300" id="header">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-
-
-
             <div class="flex items-center space-x-2">
                 <!-- 优化logo显示 -->
                 <div class="text-primary text-2xl flex items-center">
                     <img src="../favicon.ico" alt="logo" class="w-10 h-10 object-contain">
                 </div>
                 <a href="./" rel="noopener noreferrer">
-                    <h1 class="text-[clamp(1.2rem,3vw,1.8rem)] font-bold text-primary">麦田IC助手支持系统查询</h1>
+                <h1 class="text-[clamp(1.2rem,3vw,1.8rem)] font-bold text-primary">门禁电梯卡修改常用人员</h1>
                 </a>
             </div>
-
-
-
-
             <div class="text-sm text-gray-500 hidden md:block">
                 <span id="lastUpdate">数据加载中...</span>
             </div>
@@ -86,7 +84,7 @@
 
     <!-- 主内容区 -->
     <main class="container mx-auto px-4 py-8">
-        <!-- 选项卡区域 - 优化交互效果 -->
+        <!-- 选项卡区域 - 修复代理按钮选择器 -->
         <div class="mb-6 border-b border-gray-200">
             <div class="flex space-x-8">
                 <button id="indexTab" class="py-3 px-4 text-gray-500 hover:text-primary hover:border-primary border-b-2 border-transparent font-medium text-lg transition-all duration-300 active:scale-95">
@@ -95,10 +93,10 @@
                 <button id="icTab" class="py-3 px-4 text-gray-500 hover:text-primary hover:border-primary border-b-2 border-transparent font-medium text-lg transition-all duration-300 active:scale-95">
                     IC
                 </button>
-                <button id="cpuTab" class="py-3 px-4 text-primary border-b-2 border-primary font-medium text-lg transition-all duration-300 active:scale-95">
+                <button id="cpuTab" class="py-3 px-4 text-gray-500 hover:text-primary hover:border-primary border-b-2 border-transparent font-medium text-lg transition-all duration-300 active:scale-95">
                     CPU
                 </button>
-                <button id="proxyTab" class="py-3 px-4 text-gray-500 hover:text-primary hover:border-primary border-b-2 border-transparent font-medium text-lg transition-all duration-300 active:scale-95">
+                <button id="proxyTab" class="py-3 px-4 text-primary border-b-2 border-primary font-medium text-lg transition-all duration-300 active:scale-95">
                     代理
                 </button>
             </div>
@@ -107,7 +105,7 @@
         <!-- 搜索区域 -->
         <div class="mb-8 bg-white rounded-xl shadow-card p-6 transition-all duration-300 hover:shadow-hover">
             <div class="relative">
-                <input type="text" id="searchInput" placeholder="输入系统名搜索（如：康康A）" class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all duration-300 text-lg">
+                <input type="text" id="searchInput" placeholder="输入关键词搜索（如：无聊犬）" class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all duration-300 text-lg">
                 <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</div>
                 <button id="clearSearch" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 hidden">
                     ×
@@ -115,30 +113,26 @@
             </div>
             <div class="mt-4 flex flex-wrap gap-2">
                 <span class="text-sm text-gray-500">ℹ️ 支持模糊搜索，匹配系统名包含关键词的结果</span>
-                <span class="text-sm text-gray-500">✅ 标识表示支持该功能 | ❌ 标识表示不支持</span>
+                <span class="text-sm text-gray-500">⚠️ 排名不分前后！随机排名！</span>
             </div>
         </div>
 
-        <!-- 表格区域 -->
+        <!-- 表格区域 - 修复表头sticky、列数匹配和悬空问题 -->
         <div class="bg-white rounded-xl shadow-card overflow-hidden transition-all duration-300 hover:shadow-hover">
-            <!-- 添加 table-container 类修复表头定位 -->
-            <div class="overflow-x-auto table-container">
+            <div class="table-scroll-container overflow-x-auto">
                 <table class="w-full min-w-[768px]">
                     <thead>
-                        <!-- 删除 ontop 类 -->
-                        <tr class="bg-primary text-white sticky top-0 z-10">
-                            <th class="py-4 px-6 text-left text-lg font-semibold">系统名称</th>
-                            <th class="py-4 px-6 text-center text-lg font-semibold">识别</th>
-                            <th class="py-4 px-6 text-center text-lg font-semibold">修改</th>
-                            <th class="py-4 px-6 text-center text-lg font-semibold">读数据</th>
-                            <th class="py-4 px-6 text-center text-lg font-semibold">写结构</th>
-                            <th class="py-4 px-6 text-center text-lg font-semibold">写数据</th>
-                            <th class="py-4 px-6 text-center text-lg font-semibold">价格</th>
+                        <!-- 表头sticky定位，z-index确保在内容上方 -->
+                        <tr class="bg-primary text-white sticky top-0 z-30">
+                            <th class="py-4 px-6 text-left text-lg font-semibold">头像</th>
+                            <th class="py-4 px-6 text-center text-lg font-semibold">昵称</th>
+                            <th class="py-4 px-6 text-center text-lg font-semibold">QQ</th>
+                            <th class="py-4 px-6 text-center text-lg font-semibold">描述</th>
                         </tr>
                     </thead>
                     <tbody id="systemTableBody" class="divide-y divide-gray-100">
                         <tr>
-                            <td colspan="7" class="py-16 text-center text-gray-500">
+                            <td colspan="4" class="py-16 text-center text-gray-500">
                                 <div class="animate-spin text-2xl mb-4 block">⟳</div>
                                 <p>数据加载中，请稍候...</p>
                             </td>
@@ -149,7 +143,7 @@
 
             <div id="noResult" class="py-16 text-center text-gray-500 hidden">
                 <div class="text-3xl mb-4 block text-gray-300">🔍</div>
-                <p>未找到匹配的系统，请尝试其他搜索关键词</p>
+                <p>未找到匹配的人物，请尝试其他搜索关键词</p>
             </div>
         </div>
     </main>
@@ -202,6 +196,7 @@
         const indexTab = document.getElementById('indexTab');
         const icTab = document.getElementById('icTab');
         const cpuTab = document.getElementById('cpuTab');
+        const proxyTab = document.getElementById('proxyTab');
 
         // 页面滚动效果
         window.addEventListener('scroll', () => {
@@ -214,54 +209,39 @@
             }
         });
 
-        // 选项卡切换逻辑优化
+        // 选项卡切换
         indexTab.addEventListener('click', () => {
-            // 跳转到首页
             window.location.href = '../';
-
-            // 更新选项卡状态
-            indexTab.classList.add('text-primary', 'border-primary');
-            indexTab.classList.remove('text-gray-500', 'border-transparent');
-            icTab.classList.add('text-gray-500', 'border-transparent');
-            icTab.classList.remove('text-primary', 'border-primary');
-            cpuTab.classList.add('text-gray-500', 'border-transparent');
-            cpuTab.classList.remove('text-primary', 'border-primary');
+            updateTabStatus(indexTab);
         });
 
         icTab.addEventListener('click', () => {
-            // 跳转到IC页面
             window.location.href = '../ic/';
-
-            // 更新选项卡状态
-            icTab.classList.add('text-primary', 'border-primary');
-            icTab.classList.remove('text-gray-500', 'border-transparent');
-            indexTab.classList.add('text-gray-500', 'border-transparent');
-            indexTab.classList.remove('text-primary', 'border-primary');
-            cpuTab.classList.add('text-gray-500', 'border-transparent');
-            cpuTab.classList.remove('text-primary', 'border-primary');
+            updateTabStatus(icTab);
         });
 
         cpuTab.addEventListener('click', () => {
-            // 当前已是CPU页面，仅更新状态
-            cpuTab.classList.add('text-primary', 'border-primary');
-            cpuTab.classList.remove('text-gray-500', 'border-transparent');
-            indexTab.classList.add('text-gray-500', 'border-transparent');
-            indexTab.classList.remove('text-primary', 'border-primary');
-            icTab.classList.add('text-gray-500', 'border-transparent');
-            icTab.classList.remove('text-primary', 'border-primary');
+            window.location.href = '../cpu/';
+            updateTabStatus(cpuTab);
         });
-        // 修复代理选项卡点击事件
+
         proxyTab.addEventListener('click', () => {
-            // 跳转到代理页面（根据实际路径调整）
-            window.location.href = '../dl/';
-            // 更新选项卡状态
-            proxyTab.classList.add('text-primary', 'border-primary');
-            proxyTab.classList.remove('text-gray-500', 'border-transparent');
-            [indexTab, icTab, cpuTab].forEach(tab => {
-                tab.classList.add('text-gray-500', 'border-transparent');
-                tab.classList.remove('text-primary', 'border-primary');
-            });
+            updateTabStatus(proxyTab);
         });
+
+        // 统一更新选项卡状态
+        function updateTabStatus(activeTab) {
+            [indexTab, icTab, cpuTab, proxyTab].forEach(tab => {
+                if (tab === activeTab) {
+                    tab.classList.add('text-primary', 'border-primary');
+                    tab.classList.remove('text-gray-500', 'border-transparent');
+                } else {
+                    tab.classList.add('text-gray-500', 'border-transparent');
+                    tab.classList.remove('text-primary', 'border-primary');
+                }
+            });
+        }
+
         // 格式化时间
         function formatTime(date) {
             const year = date.getFullYear();
@@ -275,57 +255,66 @@
         // 请求数据
         async function fetchSystemData() {
             try {
-                // 显示加载状态
                 tableBody.innerHTML = `
-          <tr>
-            <td colspan="7" class="py-16 text-center text-gray-500">
-              <div class="animate-spin text-2xl mb-4 block">⟳</div>
-              <p>数据加载中，请稍候...</p>
-            </td>
-          </tr>
-        `;
+      <tr>
+        <td colspan="4" class="py-16 text-center text-gray-500">
+          <div class="animate-spin text-2xl mb-4 block">⟳</div>
+          <p>数据加载中，请稍候...</p>
+        </td>
+      </tr>
+    `;
 
-                const response = await fetch('../MTHelp.json');
+                const response = await fetch('./people.json');
                 if (!response.ok) throw new Error('数据加载失败');
 
                 const data = await response.json();
-                systemData = data.cpu_help || {};
+                systemData = data.people || {};
 
-                // 更新最后更新时间
                 const now = new Date();
                 lastUpdate.textContent = `最后更新：${formatTime(now)}`;
 
-                // 渲染表格
                 renderTable();
 
             } catch (error) {
                 tableBody.innerHTML = `
-          <tr>
-            <td colspan="7" class="py-16 text-center text-red-500">
-              <div class="text-2xl mb-4 block">❌</div>
-              <p>${error.message}</p>
-              <button onclick="fetchSystemData()" class="mt-4 text-primary hover:underline">重试</button>
-            </td>
-          </tr>
-        `;
+      <tr>
+        <td colspan="4" class="py-16 text-center text-red-500">
+          <div class="text-2xl mb-4 block">❌</div>
+          <p>${error.message}</p>
+          <button onclick="fetchSystemData()" class="mt-4 text-primary hover:underline">重试</button>
+        </td>
+      </tr>
+    `;
                 console.error('数据加载错误:', error);
             }
+        }
+
+        // 随机排序数组（Fisher-Yates 洗牌算法）
+        function shuffleArray(array) {
+            const newArray = [...array]; // 避免修改原数组
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]]; // 交换元素
+            }
+            return newArray;
         }
 
         // 渲染表格
         function renderTable() {
             const systems = Object.entries(systemData);
-            let filteredSystems = systems;
 
-            // 搜索过滤
+            let filteredSystems = shuffleArray(systems); // 先整体随机排序
+
             if (searchKeyword.trim()) {
                 const keyword = searchKeyword.trim().toLowerCase();
-                filteredSystems = systems.filter(([name]) =>
-                    name.toLowerCase().includes(keyword)
+                filteredSystems = filteredSystems.filter(([name, config]) => // 基于随机后的数组筛选
+                    name.toLowerCase().includes(keyword) ||
+                    (config.user_note && config.user_note.toLowerCase().includes(keyword))
                 );
             }
 
-            // 显示无结果
+
+
             if (filteredSystems.length === 0) {
                 tableBody.innerHTML = '';
                 noResult.classList.remove('hidden');
@@ -334,35 +323,29 @@
 
             noResult.classList.add('hidden');
 
-            // 生成表格内容
             let tableHtml = '';
             filteredSystems.forEach(([name, config]) => {
-                // 功能状态转换
-                const getStatusIcon = (value) => {
-                    if (value === 1) return '<span class="text-accent text-xl">✅</span>';
-                    if (value === 0) return '<span class="text-danger text-xl">❌</span>';
-                    return '';
-                };
-
-                // 价格显示
-                const priceDisplay = config.price ? config.price : '免费';
-
                 tableHtml += `
-          <tr class="hover:bg-neutral/50 transition-all duration-300">
-            <td class="py-4 px-6 font-medium text-lg">${name}</td>
-            <td class="py-4 px-6 text-center">${getStatusIcon(config.analysis)}</td>
-            <td class="py-4 px-6 text-center">${getStatusIcon(config.xiugai)}</td>
-            <td class="py-4 px-6 text-center">${getStatusIcon(config.read)}</td>
-            <td class="py-4 px-6 text-center">${getStatusIcon(config.w_jiegou)}</td>
-            <td class="py-4 px-6 text-center">${getStatusIcon(config.w_shujv)}</td>
-            <td class="py-4 px-6 text-center ${config.price ? 'text-primary font-medium' : 'text-gray-500'}">${priceDisplay}</td>
-          </tr>
-        `;
+      <tr class="hover:bg-neutral/50 transition-all duration-300">
+        <td class="py-4 px-6 font-medium text-lg">
+          <img src="${config.user_qq_head_url || '../favicon.ico'}" 
+               alt="${config.user_name || '头像'}"
+               onerror="this.src='../favicon.ico'"> <!-- 图片加载失败时显示默认头像 -->
+        </td>
+        <td class="py-4 px-6 text-center">${config.user_name || '未命名'}</td>
+        <td class="py-4 px-6 text-center">
+          <a href="http://res.abeim.cn/api-qq?qq=${config.user_qq}" class="text-primary hover:underline">
+            ${config.user_qq || '未提供'}
+          </a>
+        </td>
+        <td class="py-4 px-6 text-center">${config.user_note || '无描述'}</td>
+      </tr>
+    `;
             });
 
             tableBody.innerHTML = tableHtml;
 
-            // 添加行入场动画
+            // 入场动画
             const rows = tableBody.querySelectorAll('tr');
             rows.forEach((row, index) => {
                 row.style.opacity = '0';
@@ -379,12 +362,7 @@
         searchInput.addEventListener('input', (e) => {
             searchKeyword = e.target.value;
             renderTable();
-
-            if (searchKeyword.trim()) {
-                clearSearch.classList.remove('hidden');
-            } else {
-                clearSearch.classList.add('hidden');
-            }
+            clearSearch.classList.toggle('hidden', !searchKeyword.trim());
         });
 
         // 清除搜索
@@ -396,7 +374,7 @@
             searchInput.focus();
         });
 
-        // 弹窗控制
+        // 弹窗控制 - 补充完整
         function showUpdateModal() {
             updateModal.classList.remove('hidden');
             setTimeout(() => {
@@ -427,13 +405,22 @@
             if (e.target === updateModal) hideUpdateModal();
         });
 
-        // 每小时提示更新
-        setInterval(showUpdateModal, 3600000);
+        // ESC关闭弹窗
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !updateModal.classList.contains('hidden')) {
+                hideUpdateModal();
+            }
+        });
 
         // 初始化
         document.addEventListener('DOMContentLoaded', () => {
+            // 设置默认激活的选项卡
+            updateTabStatus(proxyTab);
             fetchSystemData();
             searchInput.focus();
+
+            // 每小时提示更新
+            setInterval(showUpdateModal, 3600000);
 
             // ESC关闭弹窗
             document.addEventListener('keydown', (e) => {
