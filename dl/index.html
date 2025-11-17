@@ -27,6 +27,8 @@
                         neutral: '#F5F7FA',
                         dark: '#1D2129',
                         danger: '#F53F3F',
+                        like: '#FF4D4F',
+                        dislike: '#722ED1',
                     },
                     fontFamily: {
                         inter: ['Inter', 'system-ui', 'sans-serif'],
@@ -58,6 +60,30 @@
         th {
             white-space: nowrap;
         }
+
+        .vote-btn {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+            .vote-btn:hover {
+                transform: scale(1.1);
+            }
+
+            .vote-btn.liked {
+                color: #FF4D4F;
+                font-weight: bold;
+            }
+
+            .vote-btn.disliked {
+                color: #722ED1;
+                font-weight: bold;
+            }
+
+        .vote-count {
+            font-size: 0.9rem;
+            margin-left: 4px;
+        }
     </style>
 </head>
 
@@ -71,7 +97,7 @@
                     <img src="../favicon.ico" alt="logo" class="w-10 h-10 object-contain">
                 </div>
                 <a href="./" rel="noopener noreferrer">
-                <h1 class="text-[clamp(1.2rem,3vw,1.8rem)] font-bold text-primary">门禁电梯卡修改常用人员</h1>
+                    <h1 class="text-[clamp(1.2rem,3vw,1.8rem)] font-bold text-primary">门禁电梯卡修改常用人员</h1>
                 </a>
             </div>
             <div class="text-sm text-gray-500 hidden md:block">
@@ -118,7 +144,7 @@
         <!-- 表格区域 - 修复表头sticky、列数匹配和悬空问题 -->
         <div class="bg-white rounded-xl shadow-card overflow-hidden transition-all duration-300 hover:shadow-hover">
             <div class="table-scroll-container overflow-x-auto">
-                <table class="w-full min-w-[768px]">
+                <table class="w-full min-w-[868px]">
                     <thead>
                         <!-- 表头sticky定位，z-index确保在内容上方 -->
                         <tr class="bg-primary text-white sticky top-0 z-30">
@@ -126,11 +152,12 @@
                             <th class="py-4 px-6 text-center text-lg font-semibold">昵称</th>
                             <th class="py-4 px-6 text-center text-lg font-semibold">QQ</th>
                             <th class="py-4 px-6 text-center text-lg font-semibold">描述</th>
+                            <th class="py-4 px-6 text-center text-lg font-semibold">投票</th>
                         </tr>
                     </thead>
                     <tbody id="systemTableBody" class="divide-y divide-gray-100">
                         <tr>
-                            <td colspan="4" class="py-16 text-center text-gray-500">
+                            <td colspan="5" class="py-16 text-center text-gray-500">
                                 <div class="animate-spin text-2xl mb-4 block">⟳</div>
                                 <p>数据加载中，请稍候...</p>
                             </td>
@@ -150,7 +177,7 @@
     <footer class="bg-white mt-12 py-6 border-t border-gray-100">
         <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
             <p>麦田助手系统支持查询 | 仅为方便卡匠使用，禁止用于违法用途 | Ver:1.20</p>
-            
+
         </div>
     </footer>
 
@@ -179,6 +206,8 @@
         // 全局变量
         let systemData = {};
         let searchKeyword = '';
+        let voteData = {}; // 存储投票数据 { qq: { likes: 0, dislikes: 0 } }
+        let userVotes = {}; // 存储当前用户的投票记录 { qq: 'like'/'dislike'/null }
 
         // DOM元素
         const searchInput = document.getElementById('searchInput');
@@ -250,23 +279,139 @@
             return `${year}-${month}-${day} ${hour}:${minute}`;
         }
 
+        // 获取投票数据
+        async function fetchVoteData() {
+            try {
+                const response = await fetch('http://banming.tttttttttt.top/api/users/get.php');
+                if (!response.ok) throw new Error('投票数据加载失败');
+
+                const data = await response.json();
+                // 格式化投票数据为 { qq: { likes: 0, dislikes: 0 } }
+                data.forEach(item => {
+                    voteData[item.user_qq] = {
+                        likes: item.likes || 0,
+                        dislikes: item.dislikes || 0
+                    };
+                });
+
+                console.log('投票数据加载成功:', voteData);
+                return true;
+            } catch (error) {
+                console.error('投票数据加载错误:', error);
+                new LightTip('投票数据加载失败，部分功能可能受限');
+                return false;
+            }
+        }
+
+        // 提交投票
+        async function submitVote(userQq, action) {
+            // 防止重复投票
+            if (userVotes[userQq] === action) {
+                new LightTip(`您已经${action === 'like' ? '点赞' : '点踩'}过了`);
+                return;
+            }
+
+            try {
+                // 禁用按钮防止重复提交
+                const likeBtn = document.getElementById(`like-${userQq}`);
+                const dislikeBtn = document.getElementById(`dislike-${userQq}`);
+                if (likeBtn) likeBtn.disabled = true;
+                if (dislikeBtn) dislikeBtn.disabled = true;
+
+                const url = `http://banming.tttttttttt.top/api/users/upload.php?user_qq=${userQq}&action=${action}`;
+                const response = await fetch(url, {
+                    method: 'GET'
+                });
+
+                const result = await response.text();
+
+                // 更新本地投票数据
+                if (!voteData[userQq]) {
+                    voteData[userQq] = { likes: 0, dislikes: 0 };
+                }
+
+                // 如果之前有过其他投票，需要减去
+                if (userVotes[userQq]) {
+                    voteData[userQq][userVotes[userQq] + 's']--;
+                }
+
+                // 更新当前投票
+                voteData[userQq][action + 's']++;
+                userVotes[userQq] = action;
+
+                // 更新UI
+                updateVoteUI(userQq);
+
+                // 显示结果
+                new LightTip(message);
+
+            } catch (error) {
+                console.error('投票提交错误:', error);
+                new LightTip('投票失败，请稍后重试');
+            } finally {
+                // 启用按钮
+                const likeBtn = document.getElementById(`like-${userQq}`);
+                const dislikeBtn = document.getElementById(`dislike-${userQq}`);
+                if (likeBtn) likeBtn.disabled = false;
+                if (dislikeBtn) dislikeBtn.disabled = false;
+            }
+        }
+
+        // 更新投票UI
+        function updateVoteUI(userQq) {
+            const likeBtn = document.getElementById(`like-${userQq}`);
+            const dislikeBtn = document.getElementById(`dislike-${userQq}`);
+            const likeCount = document.getElementById(`like-count-${userQq}`);
+            const dislikeCount = document.getElementById(`dislike-count-${userQq}`);
+
+            if (!voteData[userQq]) return;
+
+            // 更新计数
+            if (likeCount) likeCount.textContent = voteData[userQq].likes;
+            if (dislikeCount) dislikeCount.textContent = voteData[userQq].dislikes;
+
+            // 更新按钮状态
+            if (likeBtn) {
+                if (userVotes[userQq] === 'like') {
+                    likeBtn.classList.add('liked');
+                    dislikeBtn.classList.remove('disliked');
+                } else {
+                    likeBtn.classList.remove('liked');
+                }
+            }
+
+            if (dislikeBtn) {
+                if (userVotes[userQq] === 'dislike') {
+                    dislikeBtn.classList.add('disliked');
+                    likeBtn.classList.remove('liked');
+                } else {
+                    dislikeBtn.classList.remove('disliked');
+                }
+            }
+        }
+
         // 请求数据
         async function fetchSystemData() {
             try {
                 tableBody.innerHTML = `
-      <tr>
-        <td colspan="4" class="py-16 text-center text-gray-500">
-          <div class="animate-spin text-2xl mb-4 block">⟳</div>
-          <p>数据加载中，请稍候...</p>
-        </td>
-      </tr>
-    `;
+          <tr>
+            <td colspan="5" class="py-16 text-center text-gray-500">
+              <div class="animate-spin text-2xl mb-4 block">⟳</div>
+              <p>数据加载中，请稍候...</p>
+            </td>
+          </tr>
+        `;
 
-                const response = await fetch('./people.json');
-                if (!response.ok) throw new Error('数据加载失败');
+                // 并行加载人员数据和投票数据
+                const [peopleResponse, voteSuccess] = await Promise.all([
+                    fetch('./people.json'),
+                    fetchVoteData()
+                ]);
 
-                const data = await response.json();
-                systemData = data.people || {};
+                if (!peopleResponse.ok) throw new Error('人员数据加载失败');
+
+                const peopleData = await peopleResponse.json();
+                systemData = peopleData.people || {};
 
                 const now = new Date();
                 lastUpdate.textContent = `最后更新：${formatTime(now)}`;
@@ -275,14 +420,14 @@
 
             } catch (error) {
                 tableBody.innerHTML = `
-      <tr>
-        <td colspan="4" class="py-16 text-center text-red-500">
-          <div class="text-2xl mb-4 block">❌</div>
-          <p>${error.message}</p>
-          <button onclick="fetchSystemData()" class="mt-4 text-primary hover:underline">重试</button>
-        </td>
-      </tr>
-    `;
+          <tr>
+            <td colspan="5" class="py-16 text-center text-red-500">
+              <div class="text-2xl mb-4 block">❌</div>
+              <p>${error.message}</p>
+              <button onclick="fetchSystemData()" class="mt-4 text-primary hover:underline">重试</button>
+            </td>
+          </tr>
+        `;
                 console.error('数据加载错误:', error);
             }
         }
@@ -311,8 +456,6 @@
                 );
             }
 
-
-
             if (filteredSystems.length === 0) {
                 tableBody.innerHTML = '';
                 noResult.classList.remove('hidden');
@@ -323,25 +466,43 @@
 
             let tableHtml = '';
             filteredSystems.forEach(([name, config]) => {
+                const userQq = config.user_qq || '';
+                const votes = voteData[userQq] || { likes: 0, dislikes: 0 };
+                const userVote = userVotes[userQq] || '';
+
                 tableHtml += `
-      <tr class="hover:bg-neutral/50 transition-all duration-300">
-        <td class="py-4 px-6 font-medium text-lg">
-          <img src="${config.user_qq_head_url || '../favicon.ico'}" 
-               alt="${config.user_name || '头像'}"
-			   class="head_img"
-               onerror="this.src='../favicon.ico'"> <!-- 图片加载失败时显示默认头像 -->
-        </td>
-        <td class="py-4 px-6 text-center">${config.user_name || '未命名'}</td>
-        <td class="py-4 px-6 text-center">
-          <ui-tips title="复制QQ号">
-		    <a href="javascript:copyText(${config.user_qq})" class="text-primary hover:underline">
-              ${config.user_qq || '未提供'}
-            </a>
-		  </ui-tips>
-        </td>
-        <td class="py-4 px-6 text-center">${config.user_note || '无描述'}</td>
-      </tr>
-    `;
+          <tr class="hover:bg-neutral/50 transition-all duration-300">
+            <td class="py-4 px-6 font-medium text-lg">
+              <img src="${config.user_qq_head_url || '../favicon.ico'}"
+                   alt="${config.user_name || '头像'}"
+                   class="head_img"
+                   onerror="this.src='../favicon.ico'"> <!-- 图片加载失败时显示默认头像 -->
+            </td>
+            <td class="py-4 px-6 text-center">${config.user_name || '未命名'}</td>
+            <td class="py-4 px-6 text-center">
+              <ui-tips title="复制QQ号">
+                <a href="javascript:copyText(${userQq})" class="text-primary hover:underline">
+                  ${userQq || '未提供'}
+                </a>
+              </ui-tips>
+            </td>
+            <td class="py-4 px-6 text-center">${config.user_note || '无描述'}</td>
+            <td class="py-4 px-6 text-center">
+              <div class="flex items-center justify-center space-x-6">
+                <button id="like-${userQq}" class="vote-btn ${userVote === 'like' ? 'liked' : ''}"
+                        onclick="submitVote(${userQq}, 'like')"
+                        ${!userQq ? 'disabled' : ''}>
+                  👍 <span id="like-count-${userQq}" class="vote-count">${votes.likes}</span>
+                </button>
+                <button id="dislike-${userQq}" class="vote-btn ${userVote === 'dislike' ? 'disliked' : ''}"
+                        onclick="submitVote(${userQq}, 'dislike')"
+                        ${!userQq ? 'disabled' : ''}>
+                  👎 <span id="dislike-count-${userQq}" class="vote-count">${votes.dislikes}</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
             });
 
             tableBody.innerHTML = tableHtml;
@@ -430,28 +591,29 @@
                 }
             });
         });
-		//复制文本到剪贴板
-		function copyText(text){
-			if (navigator.clipboard && navigator.permissions) {
-			    //使用ClipboardApi复制
-				navigator.clipboard.writeText(text);
-			} else {
-				//浏览器不支持ClipboardApi，使用旧方式
-				const textArea = document.createElement("textArea");
-				textArea.value = text;
-				textArea.style.width = 0;
-				textArea.style.position = "fixed";
-				textArea.style.left = "-999px";
-				textArea.style.top = "10px";
-				textArea.setAttribute("readonly", "readonly");
-				document.body.appendChild(textArea);
 
-				textArea.select();
-				document.execCommand("copy");
-				document.body.removeChild(textArea);
-			}
-			new LightTip('已复制！', 'success');
-		}
+        // 复制文本到剪贴板
+        function copyText(text) {
+            if (navigator.clipboard && navigator.permissions) {
+                // 使用ClipboardApi复制
+                navigator.clipboard.writeText(text);
+            } else {
+                // 浏览器不支持ClipboardApi，使用旧方式
+                const textArea = document.createElement("textArea");
+                textArea.value = text;
+                textArea.style.width = 0;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999px";
+                textArea.style.top = "10px";
+                textArea.setAttribute("readonly", "readonly");
+                document.body.appendChild(textArea);
+
+                textArea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textArea);
+            }
+            new LightTip('已复制！','success');
+        }
     </script>
 </body>
 
