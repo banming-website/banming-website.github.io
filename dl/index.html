@@ -14,9 +14,7 @@
 	<link rel="stylesheet" href="./tip/tip.css">
 	<script src="./tip/js.js"></script>
 	<link rel="stylesheet" href="./tip/css.css">
-	<script type="module">
-		import message from './tip/tip.js';
-	</script>
+	<script type="module" src="./tip/tip.js"></script>
     <!-- 配置 Tailwind 自定义主题 -->
     <script>
         tailwind.config = {
@@ -151,7 +149,7 @@
     <!-- 页脚 -->
     <footer class="bg-white mt-12 py-6 border-t border-gray-100">
         <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
-            <p>麦田助手系统支持查询 | 仅为方便卡匠使用，禁止用于违法用途 | Ver:1.18</p>
+            <p>麦田助手系统支持查询 | 仅为方便卡匠使用，禁止用于违法用途 | Ver:1.20</p>
             
         </div>
     </footer>
@@ -178,6 +176,7 @@
     </div>
 
     <script>
+		new LightTip('欢迎打开本页面！', 'success');
         // 全局变量
         let systemData = {};
         let searchKeyword = '';
@@ -452,7 +451,7 @@
 				document.execCommand("copy");
 				document.body.removeChild(textArea);
 			}
-			message.success('已复制！');
+			new LightTip('已复制！', 'success');
 		}
     </script>
 </body>
