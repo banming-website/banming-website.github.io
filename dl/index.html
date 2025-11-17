@@ -11,10 +11,10 @@
     <meta name="keywords" content="门禁,电梯卡,修改,常用人员,门禁电梯卡修改常用人员,门禁电梯卡,修改常用人员,查询">
     <meta name="description" content="门禁电梯卡修改常用人员查询页面，在这里您可以查询到众多制卡人的联系方式，以便联系、咨询。">
     <meta name="robots" content="all">
-	<link rel="stylesheet" href="./tip/tip.css">
-	<script src="./tip/js.js"></script>
-	<link rel="stylesheet" href="./tip/css.css">
-	<script type="module" src="./tip/tip.js"></script>
+    <script type="module" src="https://unpkg.com/lu2/theme/edge/js/common/ui/LightTip.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/lu2/theme/edge/css/common/ui/LightTip.css">
+    <link rel="stylesheet" href="https://unpkg.com/lu2/theme/edge/css/common/ui/Tips.css">
+    <script type="module" src="https://unpkg.com/lu2/theme/edge/js/common/ui/Tips.js"></script>
     <!-- 配置 Tailwind 自定义主题 -->
     <script>
         tailwind.config = {
@@ -48,7 +48,7 @@
             object-fit: cover;
             /* 防止图片拉伸 */
         }
-        
+
         .overflow-x-auto {
             max-height: calc(100vh - 200px);
             /* 适配页面布局的高度限制 */
@@ -176,7 +176,6 @@
     </div>
 
     <script>
-		new LightTip('欢迎打开本页面！', 'success');
         // 全局变量
         let systemData = {};
         let searchKeyword = '';
