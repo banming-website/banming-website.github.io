@@ -37,26 +37,21 @@
         }
     </script>
     <style>
-        /* 移除与sticky冲突的ontop类，修复表头定位 */
-        
-        img {
+        .head_img {
             width: 40px;
-            /* 固定尺寸，兼容移动端 */
             height: 40px;
             border-radius: 50%;
             overflow: hidden;
             object-fit: cover;
             /* 防止图片拉伸 */
         }
-        /* 表格容器添加纵向滚动，确保表头跟随滚动 */
         
         .overflow-x-auto {
             max-height: calc(100vh - 200px);
             /* 适配页面布局的高度限制 */
             overflow-y: auto;
         }
-        /* 表头单元格不换行，保证与内容列对齐 */
-        
+
         th {
             white-space: nowrap;
         }
@@ -151,7 +146,7 @@
     <!-- 页脚 -->
     <footer class="bg-white mt-12 py-6 border-t border-gray-100">
         <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
-            <p>麦田助手系统支持查询 | 仅为方便卡匠使用，禁止用于违法用途</p>
+            <p>麦田助手系统支持查询 | 仅为方便卡匠使用，禁止用于违法用途 | Ver:1.13</p>
             
         </div>
     </footer>
@@ -330,6 +325,7 @@
         <td class="py-4 px-6 font-medium text-lg">
           <img src="${config.user_qq_head_url || '../favicon.ico'}" 
                alt="${config.user_name || '头像'}"
+			   class="head_img"
                onerror="this.src='../favicon.ico'"> <!-- 图片加载失败时显示默认头像 -->
         </td>
         <td class="py-4 px-6 text-center">${config.user_name || '未命名'}</td>
