@@ -334,7 +334,7 @@
         </td>
         <td class="py-4 px-6 text-center">${config.user_name || '未命名'}</td>
         <td class="py-4 px-6 text-center">
-          <a href="mqqwpa://im/chat?chat_type=wpa&uin=${config.user_qq}" class="text-primary hover:underline">
+          <a href="javascripy:copyText(${config.user_qq});void(0);" class="text-primary hover:underline">
             ${config.user_qq || '未提供'}
           </a>
         </td>
@@ -429,6 +429,27 @@
                 }
             });
         });
+		//复制文本到剪贴板
+		function copyText(text){
+			if (navigator.clipboard && navigator.permissions) {
+			    //使用ClipboardApi复制
+				await navigator.clipboard.writeText(text);
+			} else {
+				//浏览器不支持ClipboardApi，使用旧方式
+				const textArea = document.createElement("textArea");
+				textArea.value = text;
+				textArea.style.width = 0;
+				textArea.style.position = "fixed";
+				textArea.style.left = "-999px";
+				textArea.style.top = "10px";
+				textArea.setAttribute("readonly", "readonly");
+				document.body.appendChild(textArea);
+
+				textArea.select();
+				document.execCommand("copy");
+				document.body.removeChild(textArea);
+			}
+		}
     </script>
 </body>
 
