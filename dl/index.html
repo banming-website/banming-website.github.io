@@ -8,10 +8,15 @@
     <link rel="icon" href="../favicon.ico">
     <!-- 引入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 修复meta标签content拼写错误 -->
     <meta name="keywords" content="门禁,电梯卡,修改,常用人员,门禁电梯卡修改常用人员,门禁电梯卡,修改常用人员,查询">
     <meta name="description" content="门禁电梯卡修改常用人员查询页面，在这里您可以查询到众多制卡人的联系方式，以便联系、咨询。">
     <meta name="robots" content="all">
+	<link rel="stylesheet" href="./tip/tip.css">
+	<script type="module" src="./tip/tip.js"></script>
+	<link rel="stylesheet" href="./tip/css.css">
+	<script type="module">
+		import message from './tip/js.js';
+	</script>
     <!-- 配置 Tailwind 自定义主题 -->
     <script>
         tailwind.config = {
@@ -330,9 +335,11 @@
         </td>
         <td class="py-4 px-6 text-center">${config.user_name || '未命名'}</td>
         <td class="py-4 px-6 text-center">
-          <a href="javascript:copyText(${config.user_qq})" class="text-primary hover:underline">
-            ${config.user_qq || '未提供'}
-          </a>
+          <ui-tips title="复制QQ号">
+		    <a href="javascript:copyText(${config.user_qq})" class="text-primary hover:underline">
+              ${config.user_qq || '未提供'}
+            </a>
+		  </ui-tips>
         </td>
         <td class="py-4 px-6 text-center">${config.user_note || '无描述'}</td>
       </tr>
@@ -370,7 +377,7 @@
             searchInput.focus();
         });
 
-        // 弹窗控制 - 补充完整
+        // 弹窗控制
         function showUpdateModal() {
             updateModal.classList.remove('hidden');
             setTimeout(() => {
@@ -445,6 +452,7 @@
 				document.execCommand("copy");
 				document.body.removeChild(textArea);
 			}
+			message.success('已复制！');
 		}
     </script>
 </body>
