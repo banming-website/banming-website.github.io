@@ -152,7 +152,7 @@
     <footer class="bg-white mt-12 py-6 border-t border-gray-100">
         <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
             <p>麦田助手系统支持查询 | 仅为方便卡匠使用，禁止用于违法用途</p>
-            <b>备案号：<a href="https://beian.miit.gov.cn/#/Integrated/index">鲁ICP备2022008843号-2</a></b>
+            
         </div>
     </footer>
 
@@ -334,7 +334,7 @@
         </td>
         <td class="py-4 px-6 text-center">${config.user_name || '未命名'}</td>
         <td class="py-4 px-6 text-center">
-          <a href="http://res.abeim.cn/api-qq?qq=${config.user_qq}" class="text-primary hover:underline">
+          <a href="mqqwpa://im/chat?chat_type=wpa&uin=${config.user_qq}" class="text-primary hover:underline">
             ${config.user_qq || '未提供'}
           </a>
         </td>
