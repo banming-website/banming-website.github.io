@@ -1,3 +1,4 @@
+
 {
 	"ic_help": {
 		"康拓1":{
@@ -992,7 +993,7 @@
 			"unit": 1,
 			"price": ""
 		},
-		"华烨梯控":{
+		"华炜梯控":{
 			"analysis": 1,
 			"date": 1,
 			"newcard": 1,
@@ -1094,6 +1095,14 @@
 			"newcard": 1,
 			"xiaoqu": 1,
 			"unit": 1,
+			"price": ""
+		},
+		"麦田无名梯控5":{
+			"analysis": 1,
+			"date": 1,
+			"newcard": 1,
+			"xiaoqu": 1,
+			"unit": 0,
 			"price": ""
 		},
 		"鼎博门禁":{
@@ -1270,6 +1279,14 @@
 			"newcard": 0,
 			"xiaoqu": 0,
 			"unit": 0,
+			"price": ""
+		},
+		"高优门禁":{
+			"analysis": 1,
+			"date": 1,
+			"newcard": 0,
+			"xiaoqu": 0,
+			"unit": 1,
 			"price": ""
 		},
 		"麦田无名门禁1":{
