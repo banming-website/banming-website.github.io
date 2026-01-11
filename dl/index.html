@@ -317,7 +317,7 @@
                 `;
 
                 // 加载人员数据
-                const peopleResponse = await fetch('./people.json');
+                const peopleResponse = await fetch('https://mt.qqxiaoyu.cn/people.json');
                 if (!peopleResponse.ok) throw new Error('人员数据加载失败，HTTP状态：' + peopleResponse.status);
 
                 const peopleData = await peopleResponse.json();
