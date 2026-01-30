@@ -2,490 +2,74 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <title>站点已迁移</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>麦田IC助手V2.09 - 高效IC卡修改助手</title>
-    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
-    <link rel="icon" href="./favicon.ico" type="image/x-icon">
-    <meta name="keywords" content="麦田助手,麦田,V2.09,破解版,破解,麦田助手破解版,支持系统,修改,通卡,延期">
-    <meta name="description" content="麦田IC助手V2.09官方网站，在这里您可以免费下载麦田助手V2.09。">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
         body {
-            background-color: #f9fbf8;
-            color: #2d3748;
-        }
-
-        /* 导航栏 */
-        nav {
+            margin: 0;
+            height: 100vh;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 1rem 5%;
-            background-color: #fff;
-            box-shadow: 0 2px 8px rgba(75, 181, 67, 0.05);
-            position: sticky;
-            top: 0;
-            z-index: 999;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #4bb543;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2.5rem;
-        }
-
-            .nav-links a {
-                text-decoration: none;
-                color: #4a5568;
-                transition: color 0.3s ease;
-            }
-
-                .nav-links a:hover {
-                    color: #4bb543;
-                }
-
-        .download-btn {
-            background-color: #4bb543;
-            color: #fff !important;
-            padding: 0.5rem 1.2rem;
-            border-radius: 2rem;
-        }
-
-            .download-btn:hover {
-                background-color: #3da037 !important;
-            }
-
-        /* 英雄区 */
-        .hero {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 5rem 5%;
-            gap: 4rem;
-            background-color: #f0f8ee;
-            border-bottom: 1px solid #e8f5e1;
-        }
-
-        .hero-text {
-            flex: 1;
-        }
-
-            .hero-text h1 {
-                font-size: 2.8rem;
-                color: #2d3748;
-                margin-bottom: 1.5rem;
-                line-height: 1.3;
-            }
-
-            .hero-text span {
-                color: #4bb543;
-            }
-
-            .hero-text p {
-                font-size: 1.1rem;
-                color: #4a5568;
-                margin-bottom: 2rem;
-                line-height: 1.6;
-            }
-
-        .hero-btns {
-            display: flex;
-            gap: 1.5rem;
-        }
-
-        .primary-btn {
-            background-color: #4bb543;
-            color: #fff;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-            .primary-btn:hover {
-                background-color: #3da037;
-            }
-
-        .secondary-btn {
-            background-color: #fff;
-            color: #4bb543;
-            border: 1px solid #4bb543;
-            padding: 1rem 2rem;
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-            .secondary-btn:hover {
-                background-color: #f0f8ee;
-            }
-
-        .hero-img {
-            flex: 1;
-            text-align: center;
-        }
-
-            .hero-img img {
-                width: 100%;
-                max-width: 500px;
-                border-radius: 1rem;
-                box-shadow: 0 8px 24px rgba(75, 181, 67, 0.1);
-            }
-
-        /* 功能区 */
-        .features {
-            padding: 6rem 5%;
-            text-align: center;
-        }
-
-        .section-title {
-            font-size: 2.2rem;
-            color: #2d3748;
-            margin-bottom: 1rem;
-        }
-
-        .section-desc {
-            font-size: 1.1rem;
-            color: #4a5568;
-            margin-bottom: 4rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .feature-card {
-            padding: 2.5rem 2rem;
-            background-color: #fff;
-            border-radius: 1rem;
-            box-shadow: 0 5px 15px rgba(75, 181, 67, 0.05);
-            transition: transform 0.3s ease;
-        }
-
-            .feature-card:hover {
-                transform: translateY(-10px);
-            }
-
-            .feature-card i {
-                font-size: 2.5rem;
-                color: #4bb543;
-                margin-bottom: 1.5rem;
-            }
-
-            .feature-card h3 {
-                font-size: 1.5rem;
-                color: #2d3748;
-                margin-bottom: 1rem;
-            }
-
-            .feature-card p {
-                color: #4a5568;
-                line-height: 1.6;
-            }
-
-        /* 新增：对比区域样式 */
-        .comparison {
-            padding: 6rem 5%;
-            background-color: #fff;
-            text-align: center;
-        }
-
-        .comparison-table {
-            width: 100%;
-            max-width: 1000px;
-            margin: 0 auto;
-            border-collapse: collapse;
-            box-shadow: 0 5px 15px rgba(75, 181, 67, 0.05);
-            border-radius: 1rem;
-            overflow: hidden;
-        }
-
-            .comparison-table th,
-            .comparison-table td {
-                padding: 1.5rem 1rem;
-                border-bottom: 1px solid #f0f8ee;
-            }
-
-            .comparison-table th {
-                background-color: #f0f8ee;
-                color: #2d3748;
-                font-weight: 600;
-            }
-
-            .comparison-table tr:last-child td {
-                border-bottom: none;
-            }
-
-            .comparison-table tr:hover {
-                background-color: #f9fbf8;
-            }
-
-        .check-icon {
-            color: #4bb543;
-            font-weight: bold;
-        }
-
-        .cross-icon {
-            color: #e53e3e;
-            font-weight: bold;
-        }
-
-        /* 页脚 */
-        footer {
-            padding: 3rem 5%;
-            background-color: #f0f8ee;
-            border-top: 1px solid #e8f5e1;
-            text-align: center;
-        }
-
-        .footer-links {
-            display: flex;
             justify-content: center;
-            gap: 2rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap; /* 移动端自动换行，避免溢出 */
+            background: #f7f9fc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+            color: #333;
         }
-
-            /* 优化：页脚链接样式（包含图标） */
-            .footer-links a {
-                text-decoration: none;
-                color: #4a5568;
-                transition: all 0.3s ease;
-                display: inline-flex; /* 让文字与图标水平居中对齐 */
-                align-items: center;
-                gap: 0.3rem; /* 文字与图标之间留合理间距，不拥挤 */
-                font-size: 0.95rem;
-            }
-
-                .footer-links a:hover {
-                    color: #4bb543; /* hover时与主色调统一 */
-                }
-
-                /* 优化：外部链接图标样式 */
-                .footer-links a .external-icon {
-                    width: 12px; /* 缩小图标尺寸，更精致，不抢文字风头 */
-                    height: 12px;
-                    stroke: currentColor; /* 图标颜色继承父级链接颜色，实现hover同步变色 */
-                    stroke-width: 2;
-                    flex-shrink: 0; /* 防止图标被压缩变形 */
-                }
-
-        .copyright {
-            color: #718096;
-            font-size: 0.9rem;
+        .box {
+            background: #fff;
+            padding: 32px 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.08);
+            text-align: center;
+            max-width: 420px;
         }
-
-        /* 响应式 */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-
-            .hero {
-                flex-direction: column;
-                padding: 3rem 5%;
-                text-align: center;
-            }
-
-            .hero-text h1 {
-                font-size: 2rem;
-            }
-
-            .hero-btns {
-                justify-content: center;
-            }
-
-            .section-title {
-                font-size: 1.8rem;
-            }
-
-            /* 对比表格响应式 */
-            .comparison-table th,
-            .comparison-table td {
-                padding: 1rem 0.5rem;
-                font-size: 0.9rem;
-            }
+        h1 { margin-bottom: 12px; }
+        a {
+            display: inline-block;
+            margin-top: 16px;
+            padding: 10px 20px;
+            background: #4f46e5;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+        .tip {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #666;
         }
     </style>
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <nav>
-        <div class="logo">麦田IC助手</div>
-        <div class="nav-links">
-            <a href="#home">首页</a>
-            <a href="#features">核心功能</a>
-            <a href="#comparison">对比评测</a>
-            <a href="#guide">使用指南</a>
-            <a href="#faq">常见问题</a>
-            <a download="麦田助手V2.09.exe" href="https://banming.xyz/%E9%BA%A6%E7%94%B0IC%E5%8A%A9%E6%89%8BV2.09.exe" class="download-btn"><b>免费下载</b></a>
-        </div>
-    </nav>
+<div class="box">
+    <h1>🚀 站点已迁移</h1>
+    <p>本页面已迁移至新域名：</p>
+    <p><strong id="target"></strong></p>
+    <a id="jumpBtn" href="#">立即前往</a>
+    <div class="tip"><span id="sec">5</span> 秒后自动跳转…</div>
+</div>
 
-    <section class="hero" id="home">
-        <div class="hero-text">
-            <h1>让工作 <span>更智能</span>，让生活 <span>更高效</span></h1>
-            <p>麦田IC助手是一款好用的IC卡修改软件，体积小、启动快、无广告，支持数十种系统，原卡修改、指定卡号发卡、随机卡号发卡等实用功能，一次性收费，没有二次收费或广告。</p>
-            <div class="hero-btns">
-                <a class="primary-btn" download="麦田助手V2.09.exe" href="https://banming.xyz/%E9%BA%A6%E7%94%B0IC%E5%8A%A9%E6%89%8BV2.09.exe"><i class="fa-solid fa-download"></i>免费下载</a>
-                <a class="secondary-btn" href="https://fk.n5c.cn/r3JSYZ">购买授权码</a>
-            </div>
-        </div>
-        <div class="hero-img">
-            <img src="./img/mt.png" alt="麦田IC助手界面展示">
-        </div>
-    </section>
+<script>
+(function () {
+    const newDomain = "https://banming.top/";
+    const path = location.pathname + location.search + location.hash;
+    const targetUrl = newDomain + path;
 
-    <section class="features" id="features">
-        <h2 class="section-title">轻量实用，解决你的日常痛点</h2>
-        <p class="section-desc">专注于核心实用功能，拒绝冗余，让每一个功能都能真正帮到你，提升制卡效率。</p>
-        <div class="features-grid">
-            <div class="feature-card">
-                <i class="fa-solid fa-bolt-lightning"></i>
-                <h3>智能卡片分析</h3>
-                <p>自动识别卡片系统，快速检测卡片到期时间、有效楼层，支持多种文件格式，是您的得力助手。</p>
-            </div>
-            <div class="feature-card">
-                <i class="fa-solid fa-thumbs-up"></i>
-                <h3>支持超多系统</h3>
-                <p>支持康拓、鑫洋、鼎博、枫畅、天宇、旺龙等系统，再也不怕遇到“未知系统”。</p>
-            </div>
-            <div class="feature-card">
-                <i class="fa-regular fa-credit-card"></i>
-                <h3>一键发卡</h3>
-                <p>麦田助手不同于其他同类软件，我们的软件仅需要点击“随机卡号发卡”发卡即可完成，不像其他软件操作复杂，浪费时间。</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-edit"></i>
-                <h3>原卡修改</h3>
-                <p>可直接原卡修改，适用于客户只需要延期，不需要复制多卡的情况。</p>
-            </div>
-            <div class="feature-card">
-                <i class="fa-solid fa-microchip"></i>
-                <h3>无限次使用</h3>
-                <p>麦田助手V2.09，数据均在本地处理，离线也可使用（首次注册需联网，注册后无需联网）。</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-feather-alt"></i>
-                <h3>极致轻量无广告</h3>
-                <p>绿色版程序，仅15MB，启动速度小于3秒，无任何弹窗广告，不占用后台资源，不打扰你的工作和生活。</p>
-            </div>
-        </div>
-    </section>
+    document.getElementById("target").textContent = targetUrl;
+    document.getElementById("jumpBtn").href = targetUrl;
 
-    <!-- 对比 -->
-    <section class="comparison" id="comparison">
-        <h2 class="section-title">与其他改卡工具对比</h2>
-        <p class="section-desc">相同的功能需求，我们更轻、更快、更贴心，对比后你会发现选择的理由</p>
-        <table class="comparison-table">
-            <thead>
-                <tr>
-                    <th>功能特性</th>
-                    <th>麦田助手</th>
-                    <th>软件A</th>
-                    <th>软件B</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>软件体积</td>
-                    <td class="check-icon">≤10MB</td>
-                    <td class="cross-icon">≥500MB</td>
-                    <td class="cross-icon">≥300MB</td>
-                </tr>
-                <tr>
-                    <td>启动速度</td>
-                    <td class="check-icon">≤3秒</td>
-                    <td class="cross-icon">≥5秒</td>
-                    <td class="cross-icon">≥4秒</td>
-                </tr>
-                <tr>
-                    <td>广告</td>
-                    <td class="check-icon">无</td>
-                    <td class="cross-icon">多</td>
-                    <td class="cross-icon">多</td>
-                </tr>
-                <tr>
-                    <td>后台资源占用</td>
-                    <td class="check-icon">极低</td>
-                    <td class="cross-icon">高</td>
-                    <td class="cross-icon">中高</td>
-                </tr>
-                <tr>
-                    <td>一键发卡</td>
-                    <td class="check-icon">支持</td>
-                    <td class="check-icon">支持（按次付费）</td>
-                    <td class="check-icon">不支持</td>
-                </tr>
-                <tr>
-                    <td>离线使用</td>
-                    <td class="check-icon">完全支持</td>
-                    <td class="cross-icon">不支持</td>
-                    <td class="cross-icon">不支持</td>
-                </tr>
-                <tr>
-                    <td>付费模式</td>
-                    <td class="check-icon">单次付费</td>
-                    <td class="cross-icon">订阅付费</td>
-                    <td class="cross-icon">按年付费</td>
-                </tr>
-            </tbody>
-        </table>
-    </section>
+    let sec = 5;
+    const secEl = document.getElementById("sec");
 
-    <footer>
-        <div class="footer-links">
-            <a href="/policy/">
-                免责声明
-                <svg class="external-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M15 3h6v6"></path>
-                    <path d="M10 14 21 3"></path>
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                </svg>
-            </a>
-            <a href="/user/">
-                用户协议
-                <svg class="external-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M15 3h6v6"></path>
-                    <path d="M10 14 21 3"></path>
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                </svg>
-            </a>
-            <a href="https://v.wjx.cn/vm/rOAHXaS.aspx">
-                反馈建议
-                <svg class="external-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M15 3h6v6"></path>
-                    <path d="M10 14 21 3"></path>
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                </svg>
-            </a>
-        </div>
-        <p class="copyright">© 2026 麦田IC助手 版权所有</p>
-    </footer>
+    const timer = setInterval(() => {
+        sec--;
+        secEl.textContent = sec;
+        if (sec <= 0) {
+            clearInterval(timer);
+            location.replace(targetUrl);
+        }
+    }, 1000);
+})();
+</script>
 </body>
 </html>
